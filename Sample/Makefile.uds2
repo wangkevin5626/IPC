@@ -1,0 +1,2 @@
+TARGET  = UnixDomainSocket_Test2
+include make.settings

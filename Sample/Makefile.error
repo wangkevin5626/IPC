@@ -1,0 +1,2 @@
+TARGET  = Error_Test
+include make.settings

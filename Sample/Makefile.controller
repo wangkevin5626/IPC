@@ -1,0 +1,2 @@
+TARGET  = Controller_Stub
+include make.settings

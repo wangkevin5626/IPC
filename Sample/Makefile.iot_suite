@@ -1,0 +1,2 @@
+TARGET  = IoTSuite_Stub
+include make.settings

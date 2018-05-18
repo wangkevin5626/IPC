@@ -1,0 +1,43 @@
+SRCS += \
+	./$(TARGET).o \
+
+OBJS = ${SRCS:.cpp=.o}
+
+INCLUDE = -I. -I../include
+LIB_DIR = -L../lib
+
+# CPU target or local
+
+ifeq ($(CPU), target)
+	LIBS    = -lPicoIPC_target -lpthread -lrt
+	CROSS_COMPILE   = arm-none-linux-gnueabi-
+	CC				= @echo compiling $< && $(CROSS_COMPILE)g++
+	LINK			= @echo linking $@ && $(CROSS_COMPILE)g++
+	AR				= @echo archiving $@ && $(CROSS_COMPILE)ar
+
+	DEFINES		+= 
+	CFLAGS		= -Wno-psabi -pipe -g -O2 -Wall -Wno-unused-function -Wno-deprecated-declarations -fPIC -march=armv7-a -mcpu=cortex-a9 -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp $(DEFINES)
+	LFLAGS		= 
+else
+	LIBS    = -lPicoIPC_local -lpthread -lrt
+	CC		= @echo compiling $< && g++-4.6
+	LINK	= @echo linking $@ && g++-4.6
+	AR		= @echo archiving $@ && ar
+
+	DEFINES		+= 
+	CFLAGS	= -g -O2 -Wall -Wno-unused-function -Wno-unused-result -Wno-unused-variable -Wno-deprecated-declarations $(DEFINES)
+	LFLAGS	= 
+endif
+
+.SUFFIXES : .cpp .o .h
+
+all:$(TARGET)
+
+.cpp.o:
+	$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+$(TARGET): $(OBJS)  
+	$(LINK) $(LFLAGS) -o ./output/$(TARGET) $(OBJS) $(LIB_DIR) $(LIBS)
+
+clean:
+	rm -f ./output/$(TARGET) $(OBJS) *~ core *.core

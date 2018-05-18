@@ -1,0 +1,2 @@
+TARGET  = Semaphore_Test
+include make.settings
